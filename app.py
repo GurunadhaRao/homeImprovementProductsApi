@@ -3,13 +3,17 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SQLAlchemyError
 from werkzeug.exceptions import NotFound, BadRequest
 from flask_cors import CORS
+import json
+
+with open('config.json') as f:
+    config_json = json.load(f)
 
 app = Flask(__name__)
 
 CORS(app)
 
 # Database configuration
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost/home_improvement'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+mysqlconnector://{}:{}@{}/{}'.format(config_json['username'], config_json['password'], config_json['hostname'], config_json['database'])
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 

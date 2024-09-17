@@ -1,22 +1,22 @@
-# Use an official Python runtime as a base image
 FROM python:3.9-slim
 
-# Set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+# Set up a virtual environment path
+ENV VIRTUAL_ENV /env
+ENV PATH /env/bin:$PATH
 
 # Set the working directory
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
+# Copy the project files to the container
 COPY . /app
 
-# Install any needed dependencies
-RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+# Install virtual environment, upgrade pip, and install dependencies
+RUN python -m venv /env && \
+pip install --upgrade pip && \
+pip install -r requirements.txt
 
-# Expose the port the app runs on
+# Expose the port the app will run on
 EXPOSE 5000
 
-# Run the app
+# Start the application
 CMD ["python", "app.py"]
