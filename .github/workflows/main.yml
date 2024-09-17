@@ -1,0 +1,31 @@
+name: Build and Push to Artifact Registry
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+
+      - name: Authenticate Docker to Artifact Registry
+        run: gcloud auth configure-docker us-central1-docker.pkg.dev -q
+
+      - name: Build the Docker Image
+        run: docker build -t us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/pythondemoapp/tdw-kt-img:$GITHUB_SHA .
+
+      - name: Push the Docker Image
+        run: docker push us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/pythondemoapp/tdw-kt-img:$GITHUB_SHA
+
+      - name: Post Image URI
+        run: |
+          echo "Image URI: us-central1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/pythondemoapp/tdw-kt-img:$GITHUB_SHA"
