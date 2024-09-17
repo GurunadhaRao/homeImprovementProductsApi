@@ -2,8 +2,11 @@ from flask import Flask, request, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.exc import SQLAlchemyError
 from werkzeug.exceptions import NotFound, BadRequest
+from flask_cors import CORS
 
 app = Flask(__name__)
+
+CORS(app)
 
 # Database configuration
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://root:root@localhost/home_improvement'

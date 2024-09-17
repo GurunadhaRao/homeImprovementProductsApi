@@ -1,0 +1,131 @@
+openapi: 3.0.0
+info:
+  title: Home Improvement Product API
+  description: API to manage products for a home improvement store
+  version: 1.0.0
+servers:
+  - url: http://127.0.0.1:8080
+    description: Local Development Server
+paths:
+  /products:
+    get:
+      summary: Get all products
+      responses:
+        '200':
+          description: A list of products
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Product'
+        '500':
+          description: Internal Server Error
+    post:
+      summary: Add a new product
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '201':
+          description: Product added
+        '400':
+          description: Bad Request - Missing required fields
+        '500':
+          description: Internal Server Error
+  /products/{id}:
+    get:
+      summary: Get product by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Product details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Product'
+        '404':
+          description: Product not found
+        '500':
+          description: Internal Server Error
+    put:
+      summary: Update a product by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '200':
+          description: Product updated
+        '404':
+          description: Product not found
+        '500':
+          description: Internal Server Error
+    delete:
+      summary: Delete a product by ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Product deleted
+        '404':
+          description: Product not found
+        '500':
+          description: Internal Server Error
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+        category:
+          type: string
+        price:
+          type: number
+          format: float
+        stock:
+          type: integer
+    ProductInput:
+      type: object
+      required:
+        - name
+        - price
+        - stock
+      properties:
+        name:
+          type: string
+          example: Hammer
+        category:
+          type: string
+          example: Tools
+        price:
+          type: number
+          format: float
+          example: 19.99
+        stock:
+          type: integer
+          example: 100
